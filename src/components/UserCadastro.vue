@@ -25,6 +25,8 @@
 
         <button type="submit">Cadastrar</button>
       </form>
+
+      <p>Já tem uma conta? <a @click="irParaLogin">Faça login aqui</a></p>
     </div>
   </div>
 </template>
@@ -43,9 +45,18 @@ export default {
     };
   },
   methods: {
-    enviarFormulario() {
-      alert('Cadastro realizado com sucesso!');
-      console.log(this.form);
+    async enviarFormulario() {
+      try {
+        const response = await axios.post('http://localhost:5000/api/cadastro', this.form);
+        alert(response.data.message); // Mostra a mensagem de sucesso do backend
+        this.$emit('loginSuccess'); // Emite o evento de sucesso de login
+      } catch (error) {
+        console.error('Erro ao enviar dados:', error);
+        alert('Ocorreu um erro ao cadastrar. Tente novamente.');
+      }
+    },
+    irParaLogin() {
+      this.$emit('mostrarLogin'); // Emite o evento para mostrar a tela de login
     }
   }
 };
@@ -57,9 +68,7 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url('@/assets/background.jpg'); /* Add your background image */
-  background-size: cover;
-  background-position: center;
+  background-color: #f0f0f0;
 }
 
 .form-container {
@@ -74,12 +83,17 @@ export default {
 
 .form-group {
   margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 label {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
+  text-align: left;
+  width: 100%;
 }
 
 input {
@@ -88,6 +102,7 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 button {
