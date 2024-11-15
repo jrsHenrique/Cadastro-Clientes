@@ -32,33 +32,36 @@
 </template>
 
 <script>
+import api from "../../../backend/services/api"; // Certifique-se de que o caminho está correto
+
 export default {
-  name: 'UserCadastro',
+  name: "UserCadastro",
   data() {
     return {
       form: {
-        nome: '',
-        email: '',
-        senha: '',
-        telefone: ''
-      }
+        nome: "",
+        email: "",
+        senha: "",
+        telefone: "",
+      },
     };
   },
   methods: {
     async enviarFormulario() {
       try {
-        const response = await axios.post('http://localhost:5000/api/cadastro', this.form);
+        // Envia os dados para a API
+        const response = await api.post("/users/cadastro", this.form);
         alert(response.data.message); // Mostra a mensagem de sucesso do backend
-        this.$emit('loginSuccess'); // Emite o evento de sucesso de login
+        this.$emit("loginSuccess"); // Emite o evento de sucesso de login
       } catch (error) {
-        console.error('Erro ao enviar dados:', error);
-        alert('Ocorreu um erro ao cadastrar. Tente novamente.');
+        console.error("Erro ao enviar dados:", error.response?.data || error.message);
+        alert("Ocorreu um erro ao cadastrar. Tente novamente.");
       }
     },
     irParaLogin() {
-      this.$emit('mostrarLogin'); // Emite o evento para mostrar a tela de login
-    }
-  }
+      this.$emit("mostrarLogin"); // Emite o evento para mostrar a tela de login
+    },
+  },
 };
 </script>
 
