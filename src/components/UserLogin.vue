@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import api from "../../../backend/services/api"; // Usa o arquivo de configuração do Axios
+import api from "../services/api"; // Usa o arquivo de configuração do Axios
 
 export default {
   name: "UserLogin",
@@ -75,6 +75,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .login-container {

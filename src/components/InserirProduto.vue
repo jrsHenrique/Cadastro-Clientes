@@ -7,7 +7,7 @@
           <label for="nomeProduto">Nome do Produto:</label>
           <input 
             type="text" 
-            v-model="produto.name" 
+            v-model="produto.productName" 
             id="nomeProduto" 
             placeholder="Digite o nome do produto" 
             required 
@@ -57,14 +57,14 @@
 </template>
 
 <script>
-import api from "../../../backend/services/api";
+import api from "../services/api"; // Importa o arquivo de configuração do Axios
 
 export default {
   name: "InserirProduto",
   data() {
     return {
       produto: {
-        name: "",
+        productName: "",
         description: "",
         price: null,
         quantity: null,
@@ -74,13 +74,18 @@ export default {
   methods: {
     async inserirProduto() {
       try {
-        // Envia os dados do produto para o backend
-        const response = await api.post("/products", this.produto);
+        // Adiciona o userId (será obtido de uma variável global ou auth)
+        const userId = localStorage.getItem('userId'); // Exemplo de como obter o userId
+        const response = await api.post("/insert-product", {
+          productName: this.produto.productName,
+          price: this.produto.price,
+          userId: userId,
+        });
         alert(response.data.message || "Produto inserido com sucesso!");
 
         // Limpa o formulário após o sucesso
         this.produto = {
-          name: "",
+          productName: "",
           description: "",
           price: null,
           quantity: null,

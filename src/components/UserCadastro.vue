@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import api from "../../../backend/services/api"; // Certifique-se de que o caminho está correto
+import { insertUser } from "../services/api"; // Certifique-se de que insertUser está exportado corretamente
 
 export default {
   name: "UserCadastro",
@@ -47,16 +47,26 @@ export default {
     };
   },
   methods: {
-    async enviarFormulario() {
-      try {
-        // Envia os dados para a API
-        const response = await api.post("/users/cadastro", this.form);
-        alert(response.data.message); // Mostra a mensagem de sucesso do backend
-        this.$emit("loginSuccess"); // Emite o evento de sucesso de login
-      } catch (error) {
-        console.error("Erro ao enviar dados:", error.response?.data || error.message);
-        alert("Ocorreu um erro ao cadastrar. Tente novamente.");
-      }
+  async enviarFormulario() {
+    try {
+      // Envia os dados para a API com o formato esperado
+      const response = await insertUser({
+        nome: this.form.nome, // Mantendo os nomes do formulário
+        email: this.form.email,
+        senha: this.form.senha,
+        telefone: this.form.telefone,
+      });
+
+      // Mensagem de sucesso
+      alert(response.data.message || "Cadastro realizado com sucesso!");
+      this.$emit("loginSuccess"); // Emite o evento de sucesso de login
+
+    } catch (error) {
+      // Erro no envio
+      console.error("Erro ao enviar dados:", error.response?.data || error.message);
+      alert("Ocorreu um erro ao cadastrar. Tente novamente.");
+    }
+
     },
     irParaLogin() {
       this.$emit("mostrarLogin"); // Emite o evento para mostrar a tela de login
@@ -72,55 +82,102 @@ export default {
   align-items: center;
   min-height: 100vh;
   background-color: #f0f0f0;
+  padding: 20px;
 }
 
 .form-container {
-  background: rgba(255, 255, 255, 0.85);
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   text-align: center;
 }
 
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  width: 100%;
 }
 
 label {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
-  text-align: left;
-  width: 100%;
+  color: #555;
 }
 
 input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
+  margin-top: 5px;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-top: 20px;
 }
 
 button:hover {
   background-color: #0056b3;
+}
+
+p {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .form-container {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 16px;
+  }
+
+  input {
+    font-size: 14px;
+  }
 }
 </style>
